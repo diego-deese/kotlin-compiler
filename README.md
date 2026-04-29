@@ -180,8 +180,8 @@ Archivo seleccionado: .../files/binary.quetzal
 
 ## Autores
 
-Diego Sahid García Galván
-Iker Landeros de la O
+- Diego Sahid García Galván
+- Iker Landeros de la O
 
 ## Licencia
 
