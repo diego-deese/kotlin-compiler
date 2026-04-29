@@ -11,14 +11,17 @@ Este proyecto implementa un compilador para el lenguaje Quetzal que incluye:
 ```
 KotlinCompiler/
 ├── src/
-│   ├── Main.kt          # Lexer, mapeo de tokens y función main
-│   └── Parser.kt        # Analizador sintáctico LR(1)
+│   ├── Main.kt           # Función main y utilidades de carga de archivos
+│   ├── Lexer.kt          # Analizador léxico completo
+│   ├── Parser.kt         # Analizador sintáctico LR(1)
+│   ├── DebugTables.kt    # Funciones de depuración para tablas
+│   └── FeatureFlags.kt   # Configuración de feature flags
 ├── data/
-│   ├── grammar.txt      # Reglas de producción (83 reglas numeradas)
-│   └── parser_table.csv # Tabla de análisis LR(1) (268 estados)
-├── files/               # Archivos .quetzal para compilar
+│   ├── grammar.txt       # Reglas de producción (83 reglas numeradas)
+│   └── action_table.csv  # Tabla de análisis LR(1) (268 estados)
+├── files/                # Archivos .quetzal para compilar
 │   └── binary.quetzal
-└── README.md           # Este archivo
+└── README.md            # Este archivo
 ```
 
 ## Cómo Ejecutar
@@ -54,7 +57,7 @@ Validación sintáctica
 
 ## Manejo de Errores
 
-El compilador reporta errores con **línea y columna** precisa:
+El compilador reporta errores de forma robusta con **línea y columna** precisas. Las tablas de error se ajustan dinámicamente al tamaño del mensaje:
 
 ### Error del Lexer
 ```
@@ -66,26 +69,43 @@ Error en línea 5, columna 12: carácter inesperado '@'
 Error de sintaxis en línea 7, columna 3: token 'xyz' inesperado
 ```
 
+### Tabla de Error Dinámico
+La tabla se expande automáticamente para mensajes largos, manteniendo el formato visual correcto sin que el contenido se salga de los bordes.
+
 ## Componentes Principales
 
-### 1. Lexer (Main.kt)
+### 1. Lexer (Lexer.kt)
 - Reconoce todos los tokens del lenguaje Quetzal
 - Rastrea línea y columna de cada token
 - Maneja comentarios de una línea (`//`) y multilínea (`/* */`)
 - Soporta escape sequences en caracteres y strings
+- Conteo preciso de líneas (bug corregido)
+- Mapeo automático de `true`/`false` a terminal `lit-bool`
 
-### 2. Parser (Parser.kt)
+### 2. Main (Main.kt)
+- Selección interactiva de archivos `.quetzal`
+- Carga del código fuente
+- Flujo principal de compilación
+- Manejo robusto de errores con tablas dinámicas
+- Funciones auxiliares para interfaz de usuario
+
+### 3. Parser (Parser.kt)
 - Implementa el algoritmo LR(1) con stack de estados y símbolos
 - Lee la tabla de análisis desde CSV
 - Lee la gramática desde archivo de texto
 - Realiza shift/reduce/accept según la tabla
 
-### 3. Tabla LR(1) (parser_table.csv)
+### 4. Feature Flags (FeatureFlags.kt)
+- Control centralizado de flags de depuración
+- Flag `DEBUG` para mostrar/ocultar información del lexer y carga de tablas
+- Funciones `debugPrintln()` para output condicional
+
+### 5. Tabla LR(1) (action_table.csv)
 - 268 estados
-- Aciones: `s#` (shift), `r#` (reduce), `acc` (accept)
+- Acciones: `s#` (shift), `r#` (reduce), `acc` (accept)
 - Formato CSV con headers en primera fila
 
-### 4. Gramática (grammar.txt)
+### 6. Gramática (grammar.txt)
 - 83 producciones (reglas 0-82)
 - Formato: `número: no-terminal → símbolo1 símbolo2 ...`
 - Ε (epsilon) para producciones vacías
@@ -133,14 +153,19 @@ Archivo seleccionado: .../files/binary.quetzal
 
 ## Características Implementadas
 
-✅ Rastreo de línea y columna en tokens
-✅ Mapeo automático TokenType → Terminal LR(1)
-✅ Algoritmo LR(1) completo con shift/reduce
-✅ Lectura de tabla CSV con 268 estados
-✅ Lectura de gramática desde archivo
-✅ Selección interactiva de archivos
-✅ Mensajes de error con ubicación exacta
-✅ Fail-fast: detiene al primer error
+✅ Rastreo de línea y columna en tokens  
+✅ Mapeo automático TokenType → Terminal LR(1)  
+✅ Algoritmo LR(1) completo con shift/reduce  
+✅ Lectura de tabla CSV con 268 estados  
+✅ Lectura de gramática desde archivo  
+✅ Selección interactiva de archivos  
+✅ Mensajes de error con ubicación exacta  
+✅ Tablas de error de ancho dinámico  
+✅ Fail-fast: detiene al primer error  
+✅ Feature flags para control de debug output  
+✅ Código modularizado en archivos separados  
+✅ Conteo correcto de líneas en el lexer  
+✅ Mapeo correcto de `true`/`false` a `lit-bool`
 
 ## Notas Técnicas
 
@@ -149,10 +174,14 @@ Archivo seleccionado: .../files/binary.quetzal
 - Las líneas se cuentan desde 1 (1-indexed)
 - La tabla usa notación estándar LR(1): `s#`, `r#`, `acc`
 - Las acciones de reducción restauran el estado GOTO automáticamente
+- Feature flag `DEBUG` en `FeatureFlags.kt` controla el output de depuración
+- El ancho de las tablas de error se calcula dinámicamente según el contenido
+- Los mensajes `true` y `false` se mapean al terminal `lit-bool`
 
-## Autor
+## Autores
 
-Diego [Tu apellido]
+Diego Sahid García Galván
+Iker Landeros de la O
 
 ## Licencia
 
