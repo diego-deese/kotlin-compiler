@@ -162,8 +162,6 @@ Archivo seleccionado: .../files/binary.quetzal
 ✅ Fail-fast: detiene al primer error  
 ✅ Feature flags para control de debug output  
 ✅ Código modularizado en archivos separados  
-✅ Conteo correcto de líneas en el lexer  
-✅ Mapeo correcto de `true`/`false` a `lit-bool`
 
 ## Notas Técnicas
 
@@ -173,8 +171,6 @@ Archivo seleccionado: .../files/binary.quetzal
 - La tabla usa notación estándar LR(1): `s#`, `r#`, `acc`
 - Las acciones de reducción restauran el estado GOTO automáticamente
 - Feature flag `DEBUG` en `FeatureFlags.kt` controla el output de depuración
-- El ancho de las tablas de error se calcula dinámicamente según el contenido
-- Los mensajes `true` y `false` se mapean al terminal `lit-bool`
 
 ## Autores
 
