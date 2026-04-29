@@ -79,8 +79,6 @@ La tabla se expande automáticamente para mensajes largos, manteniendo el format
 - Rastrea línea y columna de cada token
 - Maneja comentarios de una línea (`//`) y multilínea (`/* */`)
 - Soporta escape sequences en caracteres y strings
-- Conteo preciso de líneas (bug corregido)
-- Mapeo automático de `true`/`false` a terminal `lit-bool`
 
 ### 2. Main (Main.kt)
 - Selección interactiva de archivos `.quetzal`
