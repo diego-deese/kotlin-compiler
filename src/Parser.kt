@@ -140,11 +140,8 @@ class LRParser(
 
                 when {
                     action.startsWith("s") -> {
-                        val newState = try {
-                            action.substring(1).toInt()
-                        } catch (e: Exception) {
-                            throw CompileError("Error interno: acción shift inválida '$action'")
-                        }
+                        val newState = action.substring(1).toInt()
+
                         symbolStack.add(terminal)
                         stateStack.add(newState)
                         currentTokenIndex++
