@@ -151,14 +151,8 @@ class LRParser(
                     }
 
                     action.startsWith("r") -> {
-                        val ruleNumberFromTable = try {
-                            action.substring(1).toInt()
-                        } catch (e: Exception) {
-                            throw CompileError("Error interno: acción reduce inválida '$action'")
-                        }
-                        
-                        // Las reglas en grammar.txt están numeradas de 1 a 83
-                        // Pero el array grammar es 0-indexed, así que restamos 1
+                        val ruleNumberFromTable = action.substring(1).toInt()
+
                         val grammarIndex = ruleNumberFromTable - 1
                         
                         if (grammarIndex < 0 || grammarIndex >= grammar.size) {
@@ -168,8 +162,6 @@ class LRParser(
                         }
                         val production = grammar[grammarIndex]
 
-                        // Pop production.length symbols from both stacks
-                        // But ensure stateStack never becomes completely empty
                         val numToPop = production.length
                         
                         for (i in 0 until numToPop) {
@@ -199,17 +191,7 @@ class LRParser(
                                 )
                             }
 
-                        val newState = try {
-                            if (gotoAction.startsWith("s")) {
-                                gotoAction.substring(1).toInt()
-                            } else {
-                                gotoAction.toInt()
-                            }
-                        } catch (e: Exception) {
-                            throw CompileError(
-                                "Error interno: GOTO inválido '$gotoAction' para símbolo '${production.lhs}'"
-                            )
-                        }
+                        val newState = gotoAction.toInt()
 
                         stateStack.add(newState)
                     }
