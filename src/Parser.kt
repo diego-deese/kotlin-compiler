@@ -151,12 +151,7 @@ class LRParser(
                         val ruleNumberFromTable = action.substring(1).toInt()
 
                         val grammarIndex = ruleNumberFromTable - 1
-                        
-                        if (grammarIndex < 0 || grammarIndex >= grammar.size) {
-                            throw CompileError(
-                                "Error interno: número de regla $ruleNumberFromTable fuera de rango (total: ${grammar.size})"
-                            )
-                        }
+
                         val production = grammar[grammarIndex]
 
                         val numToPop = production.length
